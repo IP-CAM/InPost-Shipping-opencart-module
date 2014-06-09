@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modification>
+        <id>Checkout Add InPost Fields</id>
+        <version>1.0</version>
+        <vqmver>2.X</vqmver>
+        <author>InPost UK Ltd.</author>
+	<file name="catalog/controller/checkout/shipping_method.php">
+                <operation info="Checout Add checkout fields">
+                        <search position="before"><![CDATA[
+if (isset($this->session->data['comment'])) {
+                        ]]></search>
+                        <add><![CDATA[
+	$config_data = array(
+			'locker_id',
+			'mobile_number',
+			'inpost_data',
+		);
+		
+		foreach ($config_data as $conf)
+		{
+			if (isset($this->request->post[$conf]))
+			{
+				$this->data[$conf] = $this->request->post[$conf];
+			}
+			else
+			{
+				$this->data[$conf] = $this->config->get($conf);
+			}
+		}
+if (isset($this->session->data['locker_id'])) {
+	$this->data['locker_id'] = $this->session->data['locker_id'];
+} else {
+	$this->data['locker_id'] = '';
+}
+                        ]]></add>
+                </operation>
+        </file>
+
+	<file name="catalog/view/theme/default/template/checkout/checkout.tpl">
+                <operation info="Checout Add Ajax checkout fields">
+                        <search position="replace"><![CDATA[
+data: $('#shipping-method input[type=\'radio\']:checked, #shipping-method textarea'),
+                        ]]></search>
+                        <add><![CDATA[
+data: $('#shipping-method input[type=\'radio\']:checked, #shipping-method input[type=\'text\'], #shipping-method input[type=\'hidden\'], #shipping-method textarea'),
+                        ]]></add>
+                </operation>
+        </file>
+
+	<file name="catalog/view/theme/default/template/checkout/shipping_method.tpl">
+                <operation info="Checout Shipping MethodAdd new InPost input fields">
+                        <search position="after" offset="1"><![CDATA[
+<td style="text-align: right;"><label for="<?php echo $quote['code']; ?>"><?php echo $quote['text']; ?></label></td>
+	 			]]></search>
+                        <add><![CDATA[
+<!-- My additions -->
+<?php if($quote['code'] == 'inpost_shipping.standard_parcels'): ?>
+	<tr>
+		<td>
+		</td>
+		<td>
+<input type="hidden" name="inpost_data" id="inpost_data" value="<?php echo $inpost_data; ?>" />
+
+Locker <input type="text" name="locker_id" id="locker_id" value="<?php echo $locker_id; ?>" maxlength="20" />
+<a href=# onclick="openMap(); return false;">Map</a>
+Mobile 77<input type="text" name="mobile_number" id="mobile_number" value="<?php echo $mobile_number; ?>" maxlength="9" />
+		</td>
+		<td>
+		</td>
+	<tr>
+<?php endif; ?>
+<!-- My additions -->
+                        ]]></add>
+                </operation>
+        </file>
+</modification>

@@ -26,5 +26,5 @@ The module includes a new sales module for the modifying of Parcel data. You **m
 
 ## Store Settings
 
-To allow the InPost shipping to calculate the correct dimensions for the parcels you **must** have the store length measurement set to cm. The actual products can be measured in any of the other units.
+To allow the InPost shipping to calculate the correct dimensions for the parcels you **must** have the store length measurement set to cm.
 

@@ -64,7 +64,7 @@ class ModelModuleInpost extends Model
 		if (isset($data['filter_parcel_id']) && !is_null($data['filter_parcel_id'])) {
 			$sql .= " WHERE parcel_id = '" . (int)$data['filter_parcel_id'] . "'";
 		} else {
-			$sql .= " WHERE parcel_id > '0'";
+			$sql .= " WHERE order_id > '0'";
 		}
 
 		if (!empty($data['filter_order_id'])) {
@@ -88,6 +88,8 @@ class ModelModuleInpost extends Model
 			$sql .= " AND DATE(sticker_creation_date) = DATE('" . $this->db->escape($data['filter_date_sticker']) . "')";
 		}
 
+		$this->log->write('Total count SQL= ' . $sql);
+
 		$query = $this->db->query($sql);
 
 		return $query->row['total'];
@@ -105,7 +107,7 @@ class ModelModuleInpost extends Model
 		if (isset($data['filter_parcel_id']) && !is_null($data['filter_parcel_id'])) {
 			$sql .= " WHERE parcel_id = '" . (int)$data['filter_parcel_id'] . "'";
 		} else {
-			$sql .= " WHERE parcel_id > '0'";
+			$sql .= " WHERE order_id > '0'";
 		}
 
 		if (!empty($data['filter_order_id'])) {
@@ -161,6 +163,20 @@ class ModelModuleInpost extends Model
 
 			$sql .= " LIMIT " . (int)$data['start'] . "," . (int)$data['limit'];
 		}
+
+		$query = $this->db->query($sql);
+
+		return $query->rows;
+	}
+
+	///
+	// getParcelDetails function
+	//
+	// @brief Get all of the details of the parcel
+	//
+	public function getParcelDetails($order_id)
+	{
+		$sql = "SELECT * FROM `" . DB_PREFIX . "order_shipping_inpostparcels` WHERE order_id = " . $order_id;
 
 		$query = $this->db->query($sql);
 

@@ -93,14 +93,12 @@ class ControllerModuleInpost extends Controller
 				'label_max_sizea',
 				'label_max_sizeb',
 				'label_max_sizec',
-				'label_price',
 				'label_err_api_key',
 				'label_err_api_url',
 				'label_err_max_weight',
 				'label_err_max_sizea',
 				'label_err_max_sizeb',
 				'label_err_max_sizec',
-				'label_err_price',
 		);
 		
 		foreach ($text_strings as $text)
@@ -116,13 +114,12 @@ class ControllerModuleInpost extends Controller
 		// NOTE: These must have the same names as the form data in your my_module.tpl file
 		//
 		$config_data = array(
-			'api_url', //this becomes available in our view by the foreach loop just below.
-			'api_key',
-			'max_weight',
-			'max_sizea',
-			'max_sizeb',
-			'max_sizec',
-			'price',
+			'inpost_api_url', //this becomes available in our view by the foreach loop just below.
+			'inpost_api_key',
+			'inpost_max_weight',
+			'inpost_max_sizea',
+			'inpost_max_sizeb',
+			'inpost_max_sizec',
 		);
 		
 		foreach ($config_data as $conf)
@@ -191,14 +188,6 @@ class ControllerModuleInpost extends Controller
 		{
 			$this->data['error_max_sizec'] = '';
 		}
-		if(isset($this->error['price']))
-		{
-			$this->data['error_price'] = $this->error['price'];
-		}
-		else
-		{
-			$this->data['error_price'] = '';
-		}
 
 		//SET UP BREADCRUMB TRAIL. YOU WILL NOT NEED TO MODIFY THIS UNLESS YOU CHANGE YOUR MODULE NAME.
   		$this->data['breadcrumbs'] = array();
@@ -266,33 +255,29 @@ class ControllerModuleInpost extends Controller
 			$this->error['warning'] = $this->language->get('error_permission');
 		}
 
-		if(strlen(utf8_decode($this->request->post['api_key'])) == 0)
+		if(strlen(utf8_decode($this->request->post['inpost_api_key'])) == 0)
 		{
 			$this->error['api_key'] = $this->language->get('label_err_api_key');
 		}
-		if(strlen(utf8_decode($this->request->post['api_url'])) == 0)
+		if(strlen(utf8_decode($this->request->post['inpost_api_url'])) == 0)
 		{
 			$this->error['api_url'] = $this->language->get('label_err_api_url');
 		}
-		if(strlen(utf8_decode($this->request->post['max_weight'])) == 0)
+		if(strlen(utf8_decode($this->request->post['inpost_max_weight'])) == 0)
 		{
 			$this->error['max_weight'] = $this->language->get('label_err_max_weight');
 		}
-		if(strlen(utf8_decode($this->request->post['max_sizea'])) == 0)
+		if(strlen(utf8_decode($this->request->post['inpost_max_sizea'])) == 0)
 		{
 			$this->error['max_sizea'] = $this->language->get('label_err_max_sizea');
 		}
-		if(strlen(utf8_decode($this->request->post['max_sizeb'])) == 0)
+		if(strlen(utf8_decode($this->request->post['inpost_max_sizeb'])) == 0)
 		{
 			$this->error['max_sizeb'] = $this->language->get('label_err_max_sizeb');
 		}
-		if(strlen(utf8_decode($this->request->post['max_sizec'])) == 0)
+		if(strlen(utf8_decode($this->request->post['inpost_max_sizec'])) == 0)
 		{
 			$this->error['max_sizec'] = $this->language->get('label_err_max_sizec');
-		}
-		if(strlen(utf8_decode($this->request->post['price'])) == 0)
-		{
-			$this->error['price'] = $this->language->get('label_err_price');
 		}
 
 		if (!$this->error)
