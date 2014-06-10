@@ -80,10 +80,12 @@ class ControllerShippingInpostShipping extends Controller
 		// Standard Parcels
 		if (isset($this->request->post['inpost_shipping_standard_parcels_rate'])) {
 			$this->data['inpost_shipping_standard_parcels_rate'] = $this->request->post['inpost_shipping_standard_parcels_rate'];
-		} elseif ($this->config->has('inpost_shipping_standard_parcels_rate')) {
+		}
+		elseif ($this->config->has('inpost_shipping_standard_parcels_rate')) {
 			$this->data['inpost_shipping_standard_parcels_rate'] = $this->config->get('inpost_shipping_standard_parcels_rate');
-		} else {
-			$this->data['inpost_shipping_standard_parcels_rate'] = '2:4.41,4:7.66,6:10.43,8:12.67,10:13.61,20:15.86';
+		}
+		else {
+			$this->data['inpost_shipping_standard_parcels_rate'] = '2.00';
 		}
 		
 		if (isset($this->request->post['inpost_shipping_standard_parcels_insurance'])) {

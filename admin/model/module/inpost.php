@@ -88,8 +88,6 @@ class ModelModuleInpost extends Model
 			$sql .= " AND DATE(sticker_creation_date) = DATE('" . $this->db->escape($data['filter_date_sticker']) . "')";
 		}
 
-		$this->log->write('Total count SQL= ' . $sql);
-
 		$query = $this->db->query($sql);
 
 		return $query->row['total'];
@@ -181,6 +179,65 @@ class ModelModuleInpost extends Model
 		$query = $this->db->query($sql);
 
 		return $query->rows;
+	}
+
+	///
+	// setParcelDetails function
+	//
+	// @brief Set the details of the parcel
+	//
+	public function setParcelDetails($order_id, $details)
+	{
+		$sql = "UPDATE `" . DB_PREFIX .
+			"order_shipping_inpostparcels`" .
+			" SET parcel_detail = '" . json_encode($details) .
+			"' WHERE order_id = '" . $order_id . "'";
+
+		$query = $this->db->query($sql);
+
+		return $query;
+	}
+
+	///
+	// setParcelId function
+	//
+	// @brief Set the Parcel ID of the order row.
+	//
+	public function setParcelId($order_id, $parcel_id)
+	{
+		$sql = "UPDATE `" . DB_PREFIX .
+			"order_shipping_inpostparcels`" .
+			" SET parcel_id = '" . $parcel_id .
+			"', parcel_status = 'Created'" .
+			" WHERE order_id = '" . $order_id . "'";
+
+		$query = $this->db->query($sql);
+
+		return $query;
+	}
+
+	///
+	// setParcelStickerDate function
+	//
+	// @brief Set the date / time the sticker was created.
+	//
+	public function setParcelStickerDate($parcels, $filename)
+	{
+		$array_parcel = explode(';', $parcels);
+
+		foreach($array_parcel as $parcel)
+		{
+			$sql = "UPDATE `" . DB_PREFIX .
+				"order_shipping_inpostparcels`" .
+				" SET sticker_creation_date = '" . date('Y-m-d H:i:s') .
+				"', file_name = \"<a href='" . $filename . "' target='_blank'>Click Here</a>\"" .
+
+				" WHERE parcel_id = '" . $parcel . "'";
+
+			$query = $this->db->query($sql);
+		}
+
+		return $query;
 	}
 
 }

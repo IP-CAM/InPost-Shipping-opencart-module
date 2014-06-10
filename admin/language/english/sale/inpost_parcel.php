@@ -122,6 +122,7 @@ $_['column_parcel_status']                    = 'Parcel Status';
 $_['column_creation_date']                    = 'Creation Date';
 $_['column_sticker_creation_date']            = 'Label Date';
 $_['column_target_machine_id']                = 'Locker ID';
+$_['column_file_name']                        = 'File Name';
 $_['column_product']                          = 'Product';
 $_['column_model']                            = 'Model';
 $_['column_quantity']                         = 'Quantity';

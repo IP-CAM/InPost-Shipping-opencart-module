@@ -15,9 +15,9 @@
     <div class="heading">
       <h1><img src="view/image/order.png" alt="" /> <?php echo $heading_title; ?></h1>
       <div class="buttons">
-         <a onclick="$('#form').attr('action', '<?php echo $create; ?>'); $('#form').attr('target', '_blank'); $('#form').submit();" class="button"><?php echo $button_create; ?></a>
-         <a onclick="location = '<?php echo $cancel; ?>'" class="button"><?php echo $button_cancel; ?></a>
-         <a onclick="location = '<?php echo $labels; ?>'" class="button"><?php echo $button_labels; ?></a>
+         <a onclick="$('#form').attr('action', '<?php echo $create; ?>'); $('#form').attr('target', '_self'); $('#form').submit();" class="button"><?php echo $button_create; ?></a>
+         <a onclick="$('#form').attr('action', '<?php echo $cancel; ?>'); $('#form').attr('target', '_self'); $('#form').submit();" class="button"><?php echo $button_cancel; ?></a>
+         <a onclick="$('#form').attr('action', '<?php echo $labels; ?>'); $('#form').attr('target', '_self'); $('#form').submit();" class="button"><?php echo $button_labels; ?></a>
          <a onclick="$('#form').attr('action', '<?php echo $modify; ?>'); $('#form').attr('target', '_self'); $('#form').submit();" class="button"><?php echo $button_modify; ?></a>
        </div>
     </div>
@@ -52,6 +52,7 @@
                 <?php } else { ?>
                 <a href="<?php echo $sort_creation_date; ?>"><?php echo $column_creation_date; ?></a>
                 <?php } ?></td>
+		<td class="left"> <?php echo $column_file_name; ?> </td>
               <td class="left"><?php if ($sort == 'sticker_creation_date') { ?>
                 <a href="<?php echo $sort_sticker_creation_date; ?>" class="<?php echo strtolower($order); ?>"><?php echo $column_sticker_creation_date; ?></a>
                 <?php } else { ?>
@@ -68,11 +69,12 @@
               <td><input type="text" name="filter_parcel_status" value="<?php echo $filter_parcel_id; ?>" /></td>
               <td><input type="text" name="filter_target_machine_id" value="<?php echo $filter_target_machine_id; ?>" /></td>
               <td><input type="text" name="filter_creation_date" value="<?php echo $filter_creation_date; ?>" size="12" class="date" /></td>
+		<td>&nbsp;</td>
               <td><input type="text" name="filter_sticker_creation_date" value="<?php echo $filter_sticker_creation_date; ?>" size="12" class="date" /></td>
               <td align="right"><a onclick="filter();" class="button"><?php echo $button_filter; ?></a></td>
             </tr>
-            <?php if ($parcels) { ?>
-            <?php foreach ($parcels as $order) { ?>
+            <?php if ($orders) { ?>
+            <?php foreach ($orders as $order) { ?>
             <tr>
               <td style="text-align: center;"><?php if ($order['selected']) { ?>
                 <input type="checkbox" name="selected[]" value="<?php echo $order['order_id']; ?>" checked="checked" />
@@ -82,8 +84,9 @@
               <td class="right"><?php echo $order['order_id']; ?></td>
               <td class="left"><?php echo $order['parcel_id']; ?></td>
               <td class="left"><?php echo $order['parcel_status']; ?></td>
-              <td class="right"><?php echo $order['target_machine_id']; ?></td>
+              <td class="left"><?php echo $order['parcel_target_machine_id']; ?></td>
               <td class="left"><?php echo $order['creation_date']; ?></td>
+              <td class="left"><?php echo $order['file_name']; ?></td>
               <td class="left"><?php echo $order['sticker_creation_date']; ?></td>
               <td class="right"><?php foreach ($order['action'] as $action) { ?>
                 [ <a href="<?php echo $action['href']; ?>"><?php echo $action['text']; ?></a> ]
@@ -200,5 +203,6 @@ $('input[name=\'filter_customer\']').catcomplete({
       	return false;
    	}
 });
+
 //--></script> 
 <?php echo $footer; ?>
