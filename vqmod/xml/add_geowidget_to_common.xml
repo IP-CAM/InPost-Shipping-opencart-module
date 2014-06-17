@@ -11,7 +11,7 @@
                         ]]></search>
                         <add><![CDATA[
 <script type="text/javascript" src="https://geowidget.inpost.co.uk/dropdown.php?field_to_update=locker_id&user_function=user_function"></script>
-<script>
+<script type="text/javascript">
 ///
 // user_function function
 //

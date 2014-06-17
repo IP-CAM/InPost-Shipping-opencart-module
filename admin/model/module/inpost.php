@@ -182,6 +182,39 @@ class ModelModuleInpost extends Model
 	}
 
 	///
+	// getParcel function
+	//
+	// @brief Get all of the details of the parcel
+	//
+	public function getParcel($order_id)
+	{
+		$sql = "SELECT * FROM `" . DB_PREFIX . "order_shipping_inpostparcels` WHERE order_id = " . $order_id;
+
+		$query = $this->db->query($sql);
+
+		if ($query->num_rows)
+		{
+			$var = explode(':', $query->row['variables']);
+
+			return array(
+				'order_id'       => $query->row['order_id'],
+				'parcel_id'      => $query->row['parcel_id'],
+				'parcel_status'  => $query->row['parcel_status'],
+				'parcel_detail'  => $query->row['parcel_detail'],
+				'parcel_machine' => $query->row['parcel_target_machine_id'],
+				'mobile'         => $var[0],
+				'size'           => $var[1],
+				'email'          => $var[2],
+				'creation_date'  => $query->row['creation_date'],
+			);
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	///
 	// setParcelDetails function
 	//
 	// @brief Set the details of the parcel
@@ -236,6 +269,46 @@ class ModelModuleInpost extends Model
 
 			$query = $this->db->query($sql);
 		}
+
+		return $query;
+	}
+
+	///
+	// setParcellToCancelled function
+	//
+	// @brief Change the status of the Order / Parcel to cancelled.
+	//
+	public function setParcelToCancelled($order_id)
+	{
+		$sql = "UPDATE `" . DB_PREFIX .
+			"order_shipping_inpostparcels`" .
+			" SET parcel_status = 'Cancelled'" .
+			" WHERE order_id = '" . $order_id . "'";
+
+		$query = $this->db->query($sql);
+
+		return $query;
+	}
+
+	///
+	// editParcel function
+	//
+	// @brief Allow the user to change some parcel details.
+	//
+	public function editParcel($order_id, $data)
+	{
+		$vars = $this->db->escape($data['mobile']) . ':' .
+			$this->db->escape($data['size']) . ':' .
+			$this->db->escape($data['email']);
+
+		$sql = "UPDATE `" . DB_PREFIX .
+			"order_shipping_inpostparcels`" .
+			" SET variables = '" . $vars . "'" .
+			", parcel_target_machine_id = '" .
+			$this->db->escape($data['machine_id']) .
+			"' WHERE order_id = '" . $order_id . "'";
+
+		$query = $this->db->query($sql);
 
 		return $query;
 	}

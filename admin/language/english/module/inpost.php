@@ -22,7 +22,6 @@ $_['label_max_weight'] = 'Maximum Weight (kg)';
 $_['label_max_sizea']  = 'Maximum Size A (cm)';
 $_['label_max_sizeb']  = 'Maximum Size B (cm)';
 $_['label_max_sizec']  = 'Maximum Size C (cm)';
-$_['label_price']      = 'Price &pound;';
 
 // Error text
 $_['label_err_api_key']    = 'API Key must be filled.';
@@ -31,7 +30,6 @@ $_['label_err_max_weight'] = 'Max Weight must be filled.';
 $_['label_err_max_sizea']  = 'Max Size A must be filled.';
 $_['label_err_max_sizeb']  = 'Max Size B must be filled.';
 $_['label_err_max_sizec']  = 'Max Size C must be filled.';
-$_['label_err_price']      = 'Max Price must be filled.';
 
 // Heading Goes here:
 $_['heading_title']    = 'InPost Shipping';
@@ -43,6 +41,17 @@ $_['text_content_top']    = 'Content Top';
 $_['text_content_bottom'] = 'Content Bottom';
 $_['text_column_left']    = 'Column Left';
 $_['text_column_right']   = 'Column Right';
+$_['text_order_id']       = 'Order ID';
+$_['text_email']          = 'Recipient Email';
+$_['text_parcel_status']  = 'Status';
+$_['text_parcel_id']      = 'Parcel ID';
+$_['text_parcel_detail']  = 'Parcel Details';
+$_['text_parcel_machine'] = 'Machine Location';
+$_['text_mobile']         = 'Recipient Mobile';
+$_['text_size']           = 'Parcel Size';
+$_['text_creation_date']  = 'Date Added';
+
+$_['button_cancel']       = 'Cancel';
 
 // Entry
 $_['entry_example']       = 'Example Entry:'; // this will be pulled through to the controller, then made available to be displayed in the view.

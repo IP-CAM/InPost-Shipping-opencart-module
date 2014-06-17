@@ -7,7 +7,7 @@ $_['text_shipping']                          = 'Shipping';
 $_['text_success']                           = 'Success: You have modified InPost shipping!';
 
 // Entry
-$_['entry_rate']                             = 'Rates:<br /><span class="help">Example: 5:10.00,7:12.00 Weight:Cost,Weight:Cost, etc..</span>';
+$_['entry_rate']                             = 'Rate &pound;:';
 $_['entry_insurance']                        = 'Compensation Rates:<br /><span class="help">Enter values upto 5,2 decimal places. (12345.67) Example: 34:0,100:1,250:2.25 - Insurance cover for cart values upto 34 would cost 0.00 extra, those values more than 100 and upto 250 will cost 2.25 extra. Do not enter currency symbols.</span>';
 $_['entry_airmail_rate_1']                   = 'Rates:<br /><span class="help">Example: 5:10.00,7:12.00 Weight:Cost,Weight:Cost, etc..<br /><br />These rates will only be applied to the below countries:<br />AL, AD, AM, AT, AZ, BY, BE, BA, BG, HR, CY, CZ, DK, EE, FO, FI, FR, GE, DE, GI, GR, GL, HU, IS, IE, IT, KZ, KG, LV, LI, LT, LU, MK, MT, MD, MC, NL, NO, PL, PT, RO, RU, SM, SK, SI, ES, SE, CH, TJ, TR, TM, UA, UZ, VA</span>';
 $_['entry_airmail_rate_2']                   = 'Rates:<br /><span class="help">Example: 5:10.00,7:12.00 Weight:Cost,Weight:Cost, etc..<br /><br />These rates will only be applied to all other countries not in the above list.</span>';

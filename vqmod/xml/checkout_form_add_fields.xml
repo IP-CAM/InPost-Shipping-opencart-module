@@ -63,7 +63,7 @@ data: $('#shipping-method input[type=\'radio\']:checked, #shipping-method input[
 
 Locker <input type="text" name="locker_id" id="locker_id" value="" maxlength="20" />
 <a href=# onclick="openMap(); return false;">Map</a>
-Mobile 77<input type="text" name="mobile_number" id="mobile_number" value="" maxlength="9" />
+Mobile 07<input type="text" name="mobile_number" id="mobile_number" value="" maxlength="9" />
 		</td>
 		<td>
 		</td>

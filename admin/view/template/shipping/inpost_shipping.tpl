@@ -73,6 +73,10 @@
                 </select></td>
             </tr>
             <tr>
+              <td><?php echo $entry_rate; ?></td>
+              <td><input type="text" name="inpost_shipping_standard_parcels_rate" value="<?php echo $inpost_shipping_standard_parcels_rate; ?>" size="5" /></td>
+            </tr>
+            <tr>
               <td><?php echo $entry_status; ?></td>
               <td><select name="inpost_shipping_status">
                   <?php if ($inpost_shipping_status) { ?>

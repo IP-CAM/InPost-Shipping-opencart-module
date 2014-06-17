@@ -13,16 +13,21 @@ class ControllerSaleInpostParcel extends Controller
 
 		$this->getList();
  	}
-	
-  	public function update() {
-		$this->load->language('sale/order');
+
+	///
+	// update function
+	//
+	public function update()
+	{
+		$this->load->language('sale/inpost_parcel');
 
 		$this->document->setTitle($this->language->get('heading_title'));
 
-		$this->load->model('sale/order');
+		$this->load->model('module/inpost');
     	
-		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
-			$this->model_sale_order->editOrder($this->request->get['order_id'], $this->request->post);
+		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm())
+		{
+			$this->model_module_inpost->editParcel($this->request->get['order_id'], $this->request->post);
 	  		
 			$this->session->data['success'] = $this->language->get('text_success');
 	  
@@ -64,7 +69,7 @@ class ControllerSaleInpostParcel extends Controller
 				$url .= '&page=' . $this->request->get['page'];
 			}
 			
-			$this->redirect($this->url->link('sale/order', 'token=' . $this->session->data['token'] . $url, 'SSL'));
+			$this->redirect($this->url->link('sale/inpost_parcel', 'token=' . $this->session->data['token'] . $url, 'SSL'));
 		}
 		
     	$this->getForm();
@@ -449,124 +454,26 @@ class ControllerSaleInpostParcel extends Controller
 			$this->error['warning'] = $this->language->get('error_permission');
 		}
 
-    	if ((utf8_strlen($this->request->post['firstname']) < 1) || (utf8_strlen($this->request->post['firstname']) > 32)) {
-      		$this->error['firstname'] = $this->language->get('error_firstname');
-    	}
-
-    	if ((utf8_strlen($this->request->post['lastname']) < 1) || (utf8_strlen($this->request->post['lastname']) > 32)) {
-      		$this->error['lastname'] = $this->language->get('error_lastname');
-    	}
+		if ((utf8_strlen($this->request->post['machine_id']) < 1) || (utf8_strlen($this->request->post['machine_id']) > 11))
+		{
+      			$this->error['target_machine_id'] = $this->language->get('error_machine_id');
+		}
 
     	if ((utf8_strlen($this->request->post['email']) > 96) || (!preg_match('/^[^\@]+@.*\.[a-z]{2,6}$/i', $this->request->post['email']))) {
       		$this->error['email'] = $this->language->get('error_email');
     	}
 		
-    	if ((utf8_strlen($this->request->post['telephone']) < 3) || (utf8_strlen($this->request->post['telephone']) > 32)) {
-      		$this->error['telephone'] = $this->language->get('error_telephone');
-    	}
-		
-    	if ((utf8_strlen($this->request->post['payment_firstname']) < 1) || (utf8_strlen($this->request->post['payment_firstname']) > 32)) {
-      		$this->error['payment_firstname'] = $this->language->get('error_firstname');
+    	if ((utf8_strlen($this->request->post['mobile']) < 9) || (utf8_strlen($this->request->post['mobile']) > 9)) {
+      		$this->error['mobile'] = $this->language->get('error_mobile');
     	}
 
-    	if ((utf8_strlen($this->request->post['payment_lastname']) < 1) || (utf8_strlen($this->request->post['payment_lastname']) > 32)) {
-      		$this->error['payment_lastname'] = $this->language->get('error_lastname');
-    	}
+		$t_size = utf8_strtoupper($this->request->post['size']);
+		if ((utf8_strlen($this->request->post['size']) != 1) ||
+			($t_size != 'A' && $t_size != 'B' && $t_size != 'C') )
+		{
+      			$this->error['size'] = $this->language->get('error_size');
+    		}
 
-    	if ((utf8_strlen($this->request->post['payment_address_1']) < 3) || (utf8_strlen($this->request->post['payment_address_1']) > 128)) {
-      		$this->error['payment_address_1'] = $this->language->get('error_address_1');
-    	}
-
-    	if ((utf8_strlen($this->request->post['payment_city']) < 3) || (utf8_strlen($this->request->post['payment_city']) > 128)) {
-      		$this->error['payment_city'] = $this->language->get('error_city');
-    	}
-		
-		$this->load->model('localisation/country');
-		
-		$country_info = $this->model_localisation_country->getCountry($this->request->post['payment_country_id']);
-		
-		if ($country_info) {
-			if ($country_info['postcode_required'] && (utf8_strlen($this->request->post['payment_postcode']) < 2) || (utf8_strlen($this->request->post['payment_postcode']) > 10)) {
-				$this->error['payment_postcode'] = $this->language->get('error_postcode');
-			}
-			
-			// VAT Validation
-			$this->load->helper('vat');
-			
-			if ($this->config->get('config_vat') && $this->request->post['payment_tax_id'] && (vat_validation($country_info['iso_code_2'], $this->request->post['payment_tax_id']) != 'invalid')) {
-				$this->error['payment_tax_id'] = $this->language->get('error_vat');
-			}				
-		}
-
-    	if ($this->request->post['payment_country_id'] == '') {
-      		$this->error['payment_country'] = $this->language->get('error_country');
-    	}
-		
-    	if ($this->request->post['payment_zone_id'] == '') {
-      		$this->error['payment_zone'] = $this->language->get('error_zone');
-    	}	
-		
-    	if ($this->request->post['payment_method'] == '') {
-      		$this->error['payment_zone'] = $this->language->get('error_zone');
-    	}			
-		
-		if (!$this->request->post['payment_method']) {
-			$this->error['payment_method'] = $this->language->get('error_payment');
-		}	
-					
-		// Check if any products require shipping
-		$shipping = false;
-		
-		if (isset($this->request->post['order_product'])) {
-			$this->load->model('catalog/product');
-			
-			foreach ($this->request->post['order_product'] as $order_product) {
-				$product_info = $this->model_catalog_product->getProduct($order_product['product_id']);
-			
-				if ($product_info && $product_info['shipping']) {
-					$shipping = true;
-				}
-			}
-		}
-		
-		if ($shipping) {
-			if ((utf8_strlen($this->request->post['shipping_firstname']) < 1) || (utf8_strlen($this->request->post['shipping_firstname']) > 32)) {
-				$this->error['shipping_firstname'] = $this->language->get('error_firstname');
-			}
-	
-			if ((utf8_strlen($this->request->post['shipping_lastname']) < 1) || (utf8_strlen($this->request->post['shipping_lastname']) > 32)) {
-				$this->error['shipping_lastname'] = $this->language->get('error_lastname');
-			}
-			
-			if ((utf8_strlen($this->request->post['shipping_address_1']) < 3) || (utf8_strlen($this->request->post['shipping_address_1']) > 128)) {
-				$this->error['shipping_address_1'] = $this->language->get('error_address_1');
-			}
-	
-			if ((utf8_strlen($this->request->post['shipping_city']) < 3) || (utf8_strlen($this->request->post['shipping_city']) > 128)) {
-				$this->error['shipping_city'] = $this->language->get('error_city');
-			}
-	
-			$this->load->model('localisation/country');
-			
-			$country_info = $this->model_localisation_country->getCountry($this->request->post['shipping_country_id']);
-			
-			if ($country_info && $country_info['postcode_required'] && (utf8_strlen($this->request->post['shipping_postcode']) < 2) || (utf8_strlen($this->request->post['shipping_postcode']) > 10)) {
-				$this->error['shipping_postcode'] = $this->language->get('error_postcode');
-			}
-	
-			if ($this->request->post['shipping_country_id'] == '') {
-				$this->error['shipping_country'] = $this->language->get('error_country');
-			}
-			
-			if ($this->request->post['shipping_zone_id'] == '') {
-				$this->error['shipping_zone'] = $this->language->get('error_zone');
-			}
-			
-			if (!$this->request->post['shipping_method']) {
-				$this->error['shipping_method'] = $this->language->get('error_shipping');
-			}			
-		}
-		
 		if ($this->error && !isset($this->error['warning'])) {
 			$this->error['warning'] = $this->language->get('error_warning');
 		}
@@ -622,7 +529,8 @@ class ControllerSaleInpostParcel extends Controller
 			// table and that the Parcel has not already been
 			// created.
 			if($ret == null || count($ret) == 0 ||
-				$ret[0]['parcel_id'] != '')
+				$ret[0]['parcel_id'] != '' ||
+				$ret[0]['parcel_status'] == "Cancelled")
 			{
 				continue;
 			}
@@ -655,7 +563,8 @@ class ControllerSaleInpostParcel extends Controller
 			}
 			else
 			{
-				$json['error'] = "Failed to create parcel. Error code: " . $reply['info']['http_code'];
+				$this->log->write("Failed to create parcel. Error code: " . $reply['info']['http_code']);
+				$this->session->data['success'] = "Failed to create parcel. Error code: " . $reply['info']['http_code'];
 			}
 
 			if(!$json)
@@ -677,7 +586,9 @@ class ControllerSaleInpostParcel extends Controller
 				{
 					// Failed to pay for a parcel.
 					// Tell the user.
-					$json['error'] = "Failed to pay for parcel. Error code: " . $reply['info']['http_code'];
+					//$json['error'] = "Failed to pay for parcel. Error code: " . $reply['info']['http_code'];
+					$this->session->data['success'] = "Failed to pay for parcel. Error code: " . $reply['info']['http_code'];
+					$this->log->write("Failed to pay for parcel. Error code: " . $reply['info']['http_code']);
 				}
 			}
 
@@ -765,7 +676,8 @@ class ControllerSaleInpostParcel extends Controller
 				// table and that the Parcel has not already been
 				// created.
 				if($ret == null || count($ret) == 0 ||
-					$ret[0]['sticker_creation_date'] != null)
+					$ret[0]['sticker_creation_date'] != null
+				|| $ret[0]['parcel_status'] == 'Cancelled')
 				{
 					$this->log->write('Labels, continiuing...');
 					continue;
@@ -827,8 +739,9 @@ class ControllerSaleInpostParcel extends Controller
 				}
 				else
 				{
-					$this->error['warning'] = 
-						"Failed to create parcel. Error code: " .
+					//$this->error['warning'] = 
+					$this->session->data['success'] = 
+						"Failed to create labels for parcel. Error code: " .
 						$reply['info']['http_code'];
 					if (isset($this->error['warning']))
 					{
@@ -841,13 +754,13 @@ class ControllerSaleInpostParcel extends Controller
 				}
 			}
 
-			$this->template = 'sale/parcel_list.tpl';
-			$this->children = array(
-				'common/header',
-				'common/footer'
-			);
+			//$this->template = 'sale/parcel_list.tpl';
+			//$this->children = array(
+				//'common/header',
+				//'common/footer'
+			//);
 
-			$this->response->setOutput($this->render());
+			//$this->response->setOutput($this->render());
 //			$this->redirect($this->url->link('sale/inpost_parcel', 'token=' . $this->session->data['token'] . $url, 'SSL'));
 		}
 
@@ -855,12 +768,530 @@ class ControllerSaleInpostParcel extends Controller
 
 		//$this->response->setOutput(json_encode($json));
 		//$this->response->setOutput($this->render());
-		$this->getList();
+		//$this->getList();
 
 		//$token = $this->session->data['token'];
 		//$this->redirect($this->url->link('sale/inpost_parcel&token=' .
 		//	$token, '', 'SSL'));
+		$this->redirect($this->url->link('sale/inpost_parcel', 'token=' . $this->session->data['token'] . $url, 'SSL'));
 	}
+
+	///
+	// cancel function
+	//
+	// @brief Try and cancel the selected parcel.
+	//
+	public function cancel()
+	{
+		$this->language->load('sale/inpost_parcel');
+
+		$this->data['title'] = $this->language->get('heading_title');
+
+		if (isset($this->request->server['HTTPS']) && (($this->request->server['HTTPS'] == 'on') || ($this->request->server['HTTPS'] == '1'))) {
+			$this->data['base'] = HTTPS_SERVER;
+		} else {
+			$this->data['base'] = HTTP_SERVER;
+		}
+
+		$this->load->model('module/inpost');
+
+		if ($this->request->server['REQUEST_METHOD'] == 'POST')
+		{
+			$url = '';
+
+			$json = array();
+
+			$this->data['orders'] = array();
+
+			$orders = array();
+
+			if (isset($this->request->post['selected']))
+			{
+				$orders = $this->request->post['selected'];
+			}
+			elseif (isset($this->request->get['order_id']))
+			{
+				$orders[] = $this->request->get['order_id'];
+			}
+		
+			$this->load->library('inpostparcels');
+			$this->load->model('module/inpost');
+
+			// Need to create our own object.
+			$object_ip = new Inpostparcels();
+
+			// Get the config details for URL & key.
+			$api_url = $this->config->get('inpost_api_url');
+			$api_key = $this->config->get('inpost_api_key');
+
+			foreach ($orders as $order_id)
+			{
+				$ret = $this->model_module_inpost->getParcelDetails($order_id);
+
+				if($ret == null || count($ret) == 0 ||
+				   $ret[0]['parcel_status'] == 'Cancelled')
+				{
+					$this->log->write('Cancel, continiuing...');
+					continue;
+				}
+
+				// Check to see if the parcel is partially
+				// created but not actually sent to InPost in
+				// any way. I.e. not parcel ID.
+				if($ret != null && $ret[0]['parcel_id'] == '')
+				{
+					// Simply update status.
+					$this->model_module_inpost->setParcelToCancelled($order_id);
+					$this->log->write('Cancel, updated as no parcel created, yet...');
+					continue;
+				}
+
+				//if($ret[0]['sticker_creation_date'] == null)
+				//{
+					$reply = $this->cancelPreparedParcel($object_ip, $ret[0]['parcel_id'], $api_key, $api_url);
+				//}
+				//else
+				//{
+					//$reply = $this->cancelPreparedParcel($object_ip, $ret[0]['parcel_id'], $api_key, $api_url);
+					//$reply = $this->cancelStickeredParcel($object_ip, $ret[0]['parcel_id'], $ret[0]['variables'], $api_key, $api_url);
+				//}
+
+				if($reply['info']['http_code'] == '204')
+				{
+					// Nothing went wrong. Update status
+					$this->model_module_inpost->setParcelToCancelled($order_id);
+				}
+				else
+				{
+					//$this->error['warning'] = 
+					$this->session->data['success'] = 
+						"Failed to cancell the parcel. Error code: " .
+						$reply['info']['http_code'];
+					if (isset($this->error['warning']))
+					{
+						$this->data['error_warning'] = $this->error['warning'];
+					}
+					else
+					{
+						$this->data['error_warning'] = '';
+					}
+				}
+			}
+
+			//$this->template = 'sale/parcel_list.tpl';
+			//$this->children = array(
+				//'common/header',
+				//'common/footer'
+			//);
+
+			//$this->response->setOutput($this->render());
+		}
+
+		//$this->getList();
+
+		$this->redirect($this->url->link('sale/inpost_parcel', 'token=' . $this->session->data['token'] . $url, 'SSL'));
+	}
+
+	///
+	// cancelPreparedParcel function
+	//
+	// @brief Cancel a parcel which has not had stickers printed.
+	//
+	private function cancelPreparedParcel($object_ip, $parcel_id, $api_key, $api_url)
+	{
+		$params['url']        = $api_url . 'parcels/' .
+				$parcel_id .
+				'/cancel-prepared';
+		$params['token']      = $api_key;
+		$params['methodType'] = 'POST';
+		$params['params']     = array();
+
+		$reply = $object_ip->connectInpostparcels($params);
+
+		$this->log->write('Reply = ' . json_encode($reply));
+
+		return $reply;
+	}
+
+	///
+	// cancelPreparedParcel function
+	//
+	// @brief Change the status of a parcel with created stickers.
+	//
+	// This would not work but the above cancel worksfor either a created
+	// parcel or one with stickers created.
+	//
+	private function cancelStickeredParcel($object_ip, $parcel_id, $vars, $api_key, $api_url)
+	{
+		$var_data = explode(':', $vars);
+
+		$params['url']        = $api_url . 'parcels/' .
+				$parcel_id;
+		$params['token']      = $api_key;
+		$params['methodType'] = 'PUT';
+		$params['params']     = array(
+				'description' => 'Cancelled',
+				'id'          => $parcel_id,
+				'size'        => $var_data[1],
+				'status'      => 'Cancelled'
+		);
+		//$params['id']     = $ret[0]['parcel_id'];
+		//$params['size']       = $var_data[1];
+		//$params['status']     = 'Cancelled';
+
+		$reply = $object_ip->connectInpostparcels($params);
+
+		$this->log->write('Reply = ' . json_encode($reply));
+
+		return $reply;
+	}
+
+	///
+	// info function
+	//
+	// @brief Display the details of the Parcel
+	//
+	public function info()
+	{
+		$this->load->model('module/inpost');
+
+		if (isset($this->request->get['order_id']))
+		{
+			$order_id = $this->request->get['order_id'];
+		}
+		else
+		{
+			$order_id = 0;
+		}
+
+		$order_info = $this->model_module_inpost->getParcel($order_id);
+
+		if ($order_info)
+		{
+			$this->load->language('module/inpost');
+
+			$this->document->setTitle($this->language->get('heading_title'));
+
+			$this->data['heading_title'] = $this->language->get('heading_title');
+
+			$text_strings = array(
+				'text_order_id',
+				'text_parcel_id',
+				'text_email',
+				'text_parcel_status',
+				'text_parcel_detail',
+				'text_parcel_machine',
+				'text_mobile',
+				'text_size',
+				'text_creation_date',
+				'button_cancel',
+			);	
+
+			foreach ($text_strings as $text)
+			{
+				$this->data[$text] = $this->language->get($text);
+			}
+			//END LANGUAGE
+
+			$this->data['token'] = $this->session->data['token'];
+
+			$url = '';
+
+			if (isset($this->request->get['filter_order_id'])) {
+				$url .= '&filter_order_id=' . $this->request->get['filter_order_id'];
+			}
+			
+			if (isset($this->request->get['filter_customer'])) {
+				$url .= '&filter_customer=' . urlencode(html_entity_decode($this->request->get['filter_customer'], ENT_QUOTES, 'UTF-8'));
+			}
+												
+			if (isset($this->request->get['filter_order_status_id'])) {
+				$url .= '&filter_order_status_id=' . $this->request->get['filter_order_status_id'];
+			}
+			
+			if (isset($this->request->get['filter_total'])) {
+				$url .= '&filter_total=' . $this->request->get['filter_total'];
+			}
+						
+			if (isset($this->request->get['filter_date_added'])) {
+				$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
+			}
+			
+			if (isset($this->request->get['filter_date_modified'])) {
+				$url .= '&filter_date_modified=' . $this->request->get['filter_date_modified'];
+			}
+
+			if (isset($this->request->get['sort'])) {
+				$url .= '&sort=' . $this->request->get['sort'];
+			}
+
+			if (isset($this->request->get['order'])) {
+				$url .= '&order=' . $this->request->get['order'];
+			}
+
+			if (isset($this->request->get['page'])) {
+				$url .= '&page=' . $this->request->get['page'];
+			}
+
+			$this->data['breadcrumbs'] = array();
+
+			$this->data['breadcrumbs'][] = array(
+				'text'      => $this->language->get('text_home'),
+				'href'      => $this->url->link('common/home', 'token=' . $this->session->data['token'], 'SSL'),
+				'separator' => false
+			);
+
+			$this->data['breadcrumbs'][] = array(
+				'text'      => $this->language->get('heading_title'),
+				'href'      => $this->url->link('sale/order', 'token=' . $this->session->data['token'] . $url, 'SSL'),				
+				'separator' => ' :: '
+			);
+
+			$this->data['cancel'] = $this->url->link('sale/inpost_parcel', 'token=' . $this->session->data['token'] . $url, 'SSL');
+
+			$this->data['order_id'] = $this->request->get['order_id'];
+			
+			$this->data['email']          = $order_info['email'];
+			$this->data['parcel_id']      = $order_info['parcel_id'];
+			$this->data['parcel_status']  = $order_info['parcel_status'];
+			$this->data['parcel_details'] = $order_info['parcel_detail'];
+			$this->data['parcel_machine'] = $order_info['parcel_machine'];
+			
+			$this->data['mobile']         = $order_info['mobile'];
+			$this->data['size']           = $order_info['size'];
+			$this->data['email']          = $order_info['email'];
+			$this->data['creation_date'] = date($this->language->get('date_format_short'), strtotime($order_info['creation_date']));
+			$this->data['creation_time'] = date($this->language->get('time_format'), strtotime($order_info['creation_date']));
+
+			$this->template = 'sale/parcel_info.tpl';
+			$this->children = array(
+				'common/header',
+				'common/footer'
+			);
+			
+			$this->response->setOutput($this->render());
+		}
+		else
+		{
+			$this->load->language('error/not_found');
+
+			$this->document->setTitle($this->language->get('heading_title'));
+
+			$this->data['heading_title'] = $this->language->get('heading_title');
+
+			$this->data['text_not_found'] = $this->language->get('text_not_found');
+
+			$this->data['breadcrumbs'] = array();
+
+			$this->data['breadcrumbs'][] = array(
+				'text'      => $this->language->get('text_home'),
+				'href'      => $this->url->link('common/home', 'token=' . $this->session->data['token'], 'SSL'),
+				'separator' => false
+			);
+
+			$this->data['breadcrumbs'][] = array(
+				'text'      => $this->language->get('heading_title'),
+				'href'      => $this->url->link('error/not_found', 'token=' . $this->session->data['token'], 'SSL'),
+				'separator' => ' :: '
+			);
+		
+			$this->template = 'error/not_found.tpl';
+			$this->children = array(
+				'common/header',
+				'common/footer'
+			);
+		
+			$this->response->setOutput($this->render());
+		}	
+	}
+
+	///
+	// getForm function
+	//
+	public function getForm() 
+	{
+		$this->load->model('module/inpost');
+
+		$text_strings = array(
+			'heading_title',
+			'text_no_results',
+			'text_default',
+			'text_select',
+			'text_none',
+			'text_wait',
+			'text_order',
+			'entry_email',
+			'entry_telephone',
+			'text_order_id',
+			'text_parcel_id',
+			'text_email',
+			'text_parcel_status',
+			'text_parcel_detail',
+			'entry_target_machine_id',
+			'text_mobile',
+			'text_size',
+			'text_creation_date',
+			'button_save',
+			'button_cancel',
+		);	
+
+		foreach ($text_strings as $text)
+		{
+			$this->data[$text] = $this->language->get($text);
+		}
+		//END LANGUAGE
+
+ 		if (isset($this->error['warning'])) {
+			$this->data['error_warning'] = $this->error['warning'];
+		} else {
+			$this->data['error_warning'] = '';
+		}
+		
+ 		if (isset($this->error['mobile'])) {
+			$this->data['error_mobile'] = $this->error['mobile'];
+		} else {
+			$this->data['error_mobile'] = '';
+		}
+
+ 		if (isset($this->error['size'])) {
+			$this->data['error_size'] = $this->error['size'];
+		} else {
+			$this->data['error_size'] = '';
+		}
+		
+ 		if (isset($this->error['email'])) {
+			$this->data['error_email'] = $this->error['email'];
+		} else {
+			$this->data['error_email'] = '';
+		}
+		
+ 		if (isset($this->error['target_machine_id'])) {
+			$this->data['error_target_machine_id'] = $this->error['target_machine_id'];
+		} else {
+			$this->data['error_target_machine_id'] = '';
+		}
+						
+		$url = '';
+
+		if (isset($this->request->get['filter_order_id'])) {
+			$url .= '&filter_order_id=' . $this->request->get['filter_order_id'];
+		}
+		
+		if (isset($this->request->get['filter_order_status_id'])) {
+			$url .= '&filter_order_status_id=' . $this->request->get['filter_order_status_id'];
+		}
+
+		if (isset($this->request->get['filter_date_added'])) {
+			$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
+		}
+		
+		if (isset($this->request->get['filter_date_modified'])) {
+			$url .= '&filter_date_modified=' . $this->request->get['filter_date_modified'];
+		}
+
+		if (isset($this->request->get['sort'])) {
+			$url .= '&sort=' . $this->request->get['sort'];
+		}
+
+		if (isset($this->request->get['order'])) {
+			$url .= '&order=' . $this->request->get['order'];
+		}
+		
+		if (isset($this->request->get['page'])) {
+			$url .= '&page=' . $this->request->get['page'];
+		}
+
+		$this->data['breadcrumbs'] = array();
+
+		$this->data['breadcrumbs'][] = array(
+			'text'      => $this->language->get('text_home'),
+			'href'      => $this->url->link('common/home', 'token=' . $this->session->data['token'], 'SSL'),
+			'separator' => false
+		);
+
+		$this->data['breadcrumbs'][] = array(
+			'text'      => $this->language->get('heading_title'),
+			'href'      => $this->url->link('sale/inpost_parcel', 'token=' . $this->session->data['token'] . $url, 'SSL'),				
+			'separator' => ' :: '
+		);
+
+		$this->data['action'] = $this->url->link('sale/inpost_parcel/update', 'token=' . $this->session->data['token'] . '&order_id=' . $this->request->get['order_id'] . $url, 'SSL');
+
+		$this->data['save'] = $this->url->link('sale/inpost_parcel/update', 'token=' . $this->session->data['token'] . $url, 'SSL');
+		$this->data['cancel'] = $this->url->link('sale/inpost_parcel', 'token=' . $this->session->data['token'] . $url, 'SSL');
+
+    	if (isset($this->request->get['order_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
+      		$order_info = $this->model_module_inpost->getParcel($this->request->get['order_id']);
+    	}
+
+		$this->data['token'] = $this->session->data['token'];
+		
+		if (isset($this->request->get['order_id'])) {
+			$this->data['order_id'] = $this->request->get['order_id'];
+		} else {
+			$this->data['order_id'] = 0;
+		}
+					
+		if (isset($this->request->server['HTTPS']) && (($this->request->server['HTTPS'] == 'on') || ($this->request->server['HTTPS'] == '1'))) {
+			$this->data['store_url'] = HTTPS_CATALOG;
+		} else {
+			$this->data['store_url'] = HTTP_CATALOG;
+		}
+		
+    		if (isset($this->request->post['email'])) {
+      			$this->data['email'] = $this->request->post['email'];
+    		} elseif (!empty($order_info)) { 
+				$this->data['email'] = $order_info['email'];
+			} else {
+      			$this->data['email'] = '';
+    		}
+
+		if (isset($this->request->post['parcel_id']))
+		{
+      			$this->data['parcel_id'] = $this->request->post['parcel_id'];
+		}
+		elseif (!empty($order_info))
+		{
+      			$this->data['parcel_id'] = $order_info['parcel_id'];
+		}
+		else
+		{
+      			$this->data['parcel_id'] = '';
+		}
+
+    		if (isset($this->request->post['mobile'])) {
+      			$this->data['mobile'] = $this->request->post['mobile'];
+    		} elseif (!empty($order_info)) { 
+				$this->data['mobile'] = $order_info['mobile'];
+		} else {
+      			$this->data['mobile'] = '';
+    		}
+		
+    		if (isset($this->request->post['size'])) {
+      			$this->data['size'] = $this->request->post['size'];
+    		} elseif (!empty($order_info)) { 
+				$this->data['size'] = $order_info['size'];
+		} else {
+      			$this->data['size'] = '';
+    		}	
+		
+		if (isset($this->request->post['target_machine_id'])) {
+      		$this->data['target_machine_id'] = $this->request->post['target_machine_id'];
+    		} elseif (!empty($order_info)) { 
+			$this->data['target_machine_id'] = $order_info['parcel_machine'];
+		} else {
+      			$this->data['target_machine_id'] = '';
+    		}
+		
+		$this->template = 'sale/parcel_form.tpl';
+		$this->children = array(
+			'common/header',
+			'common/footer'
+		);
+		
+		$this->response->setOutput($this->render());
+  	}
+
 
 }
 ?>
