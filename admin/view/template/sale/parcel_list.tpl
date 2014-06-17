@@ -18,7 +18,6 @@
          <a onclick="$('#form').attr('action', '<?php echo $create; ?>'); $('#form').attr('target', '_self'); $('#form').submit();" class="button"><?php echo $button_create; ?></a>
          <a onclick="$('#form').attr('action', '<?php echo $cancel; ?>'); $('#form').attr('target', '_self'); $('#form').submit();" class="button"><?php echo $button_cancel; ?></a>
          <a onclick="$('#form').attr('action', '<?php echo $labels; ?>'); $('#form').attr('target', '_self'); $('#form').submit();" class="button"><?php echo $button_labels; ?></a>
-         <a onclick="$('#form').attr('action', '<?php echo $modify; ?>'); $('#form').attr('target', '_self'); $('#form').submit();" class="button"><?php echo $button_modify; ?></a>
        </div>
     </div>
     <div class="content">
