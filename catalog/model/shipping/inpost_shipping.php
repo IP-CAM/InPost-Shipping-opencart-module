@@ -66,7 +66,7 @@ class ModelShippingInpostShipping extends Model
 
 				$cost = $this->config->get('inpost_shipping_standard_parcels_rate');
 
-				if ((float)$cost)
+				if ((string)$cost != '')
 				{
 					$title = $this->language->get('text_standard_parcels');
 					

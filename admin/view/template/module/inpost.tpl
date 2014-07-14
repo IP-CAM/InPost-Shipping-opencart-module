@@ -30,7 +30,7 @@
         </tr>
         <tr>
           <td><?php echo $label_max_weight; ?> <span class="required">*</span></td>
-          <td><input type="text" name="inpost_max_weight" placeholder="Max Weight (25kg)" value="<?php echo $inpost_max_weight;?>" >
+          <td><input type="text" name="inpost_max_weight" placeholder="Max Weight (20kg)" value="<?php echo $inpost_max_weight;?>" >
 	  <?php if($error_max_weight) echo '<span class="error">' . $error_max_weight . '</span>'; ?>
 	  </td>
         </tr>
