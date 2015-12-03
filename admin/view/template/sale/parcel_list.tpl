@@ -72,7 +72,7 @@
               <td><input type="text" name="filter_sticker_creation_date" value="<?php echo $filter_sticker_creation_date; ?>" size="12" class="date" /></td>
               <td align="right"><a onclick="filter();" class="button"><?php echo $button_filter; ?></a></td>
             </tr>
-            <?php if ($orders) { ?>
+            <?php if (isset($orders) && $orders) { ?>
             <?php foreach ($orders as $order) { ?>
             <tr>
               <td style="text-align: center;"><?php if ($order['selected']) { ?>
