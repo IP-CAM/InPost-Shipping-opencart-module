@@ -25,12 +25,15 @@
               <td><?php if ($inpost_shipping_display_weight) { ?>
                 <input type="radio" name="inpost_shipping_display_weight" value="1" checked="checked" />
                 <?php echo $text_yes; ?>
-                <input type="radio" name="inpost_shipping_display_weight" value="0" />
-                <?php echo $text_no; ?>
                 <?php } else { ?>
                 <input type="radio" name="inpost_shipping_display_weight" value="1" />
                 <?php echo $text_yes; ?>
+                <?php } ?>
+                <?php if (!$inpost_shipping_display_weight) { ?>
                 <input type="radio" name="inpost_shipping_display_weight" value="0" checked="checked" />
+                <?php echo $text_no; ?>
+                <?php } else { ?>
+                <input type="radio" name="inpost_shipping_display_weight" value="0" />
                 <?php echo $text_no; ?>
                 <?php } ?></td>
             </tr>
