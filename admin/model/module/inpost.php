@@ -117,7 +117,7 @@ class ModelModuleInpost extends Model
 		}
 
 		if (!empty($data['filter_target_machine_id'])) {
-			$sql .= " AND parcel_target_machine_id = '" . $data['filter_machine_id'] . "'";
+			$sql .= " AND parcel_target_machine_id = '" . $data['filter_target_machine_id'] . "'";
 		}
 
 
@@ -135,7 +135,7 @@ class ModelModuleInpost extends Model
 			'parcel_status',
 			'parcel_target_machine_id',
 			'creation_date',
-			'sticker_creati9on_date'
+			'sticker_creation_date'
 		);
 
 		if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {
