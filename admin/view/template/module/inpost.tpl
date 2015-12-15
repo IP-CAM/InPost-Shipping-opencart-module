@@ -24,7 +24,7 @@
         </tr>
         <tr>
           <td><?php echo $label_api_url; ?> <span class="required">*</span></td>
-          <td><input type="text" name="inpost_api_url" placeholder="Normally http://api-uk.easypack24.net/" value="<?php echo $inpost_api_url;?>" size="50" >
+          <td><input type="text" name="inpost_api_url" placeholder="Normally https://api-uk.easypack24.net/" value="<?php echo $inpost_api_url;?>" size="50" >
 	  <?php if($error_api_url) echo '<span class="error">' . $error_api_url . '</span>'; ?>
           </td>
         </tr>

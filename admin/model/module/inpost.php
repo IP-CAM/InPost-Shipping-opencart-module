@@ -1,7 +1,8 @@
 <?php
-########################################################################################
-#  DIY Module Builder for Opencart 1.5.1.x From HostJars http://opencart.hostjars.com  #
-########################################################################################
+###############################################################################
+#  DIY Module Builder for Opencart 1.5.1.x From HostJars                      #
+#  http://opencart.hostjars.com                                               #
+###############################################################################
 class ModelModuleInpost extends Model
 {
 	/*
@@ -117,7 +118,7 @@ class ModelModuleInpost extends Model
 		}
 
 		if (!empty($data['filter_target_machine_id'])) {
-			$sql .= " AND parcel_target_machine_id = '" . $data['filter_target_machine_id'] . "'";
+			$sql .= " AND parcel_target_machine_id = '" . $data['filter_machine_id'] . "'";
 		}
 
 
@@ -241,8 +242,7 @@ class ModelModuleInpost extends Model
 		$sql = "UPDATE `" . DB_PREFIX .
 			"order_shipping_inpostparcels`" .
 			" SET parcel_id = '" . $parcel_id .
-			"', parcel_status = 'Created'" .
-			" WHERE order_id = '" . $order_id . "'";
+			"' WHERE order_id = '" . $order_id . "'";
 
 		$query = $this->db->query($sql);
 
@@ -264,7 +264,7 @@ class ModelModuleInpost extends Model
 				"order_shipping_inpostparcels`" .
 				" SET sticker_creation_date = '" . date('Y-m-d H:i:s') .
 				"', file_name = \"<a href='" . $filename . "' target='_blank'>Click Here</a>\"" .
-
+				", parcel_status = 'Prepared' " .
 				" WHERE parcel_id = '" . $parcel . "'";
 
 			$query = $this->db->query($sql);

@@ -25,7 +25,9 @@
           <tr>
             <td><?php echo $text_parcel_id; ?></td>
             <td><?php echo $parcel_id; ?>
-               <input type="hidden" name="parcel_id" value="<?php echo $parcel_id; ?>" /></td>
+               <input type="hidden" name="parcel_id" value="<?php echo $parcel_id; ?>" />
+               <input type="hidden" name="parcel_status" value="<?php echo $parcel_status; ?>" />
+            </td>
           </tr>
             <tr>
               <td><span class="required">*</span> <?php echo $entry_target_machine_id; ?></td>

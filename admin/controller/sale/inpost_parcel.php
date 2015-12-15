@@ -25,7 +25,8 @@ class ControllerSaleInpostParcel extends Controller
 
 		$this->load->model('module/inpost');
     	
-		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm())
+		if (($this->request->server['REQUEST_METHOD'] == 'POST') &&
+			$this->validateForm())
 		{
 			$this->model_module_inpost->editParcel($this->request->get['order_id'], $this->request->post);
 	  		
@@ -41,14 +42,10 @@ class ControllerSaleInpostParcel extends Controller
 				$url .= '&filter_customer=' . urlencode(html_entity_decode($this->request->get['filter_customer'], ENT_QUOTES, 'UTF-8'));
 			}
 												
-			if (isset($this->request->get['filter_order_status_id'])) {
-				$url .= '&filter_order_status_id=' . $this->request->get['filter_order_status_id'];
+			if (isset($this->request->get['filter_parcel_status'])) {
+				$url .= '&filter_parcel_status=' . $this->request->get['filter_parcel_status'];
 			}
-			
-			if (isset($this->request->get['filter_total'])) {
-				$url .= '&filter_total=' . $this->request->get['filter_total'];
-			}
-						
+
 			if (isset($this->request->get['filter_date_added'])) {
 				$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
 			}
@@ -282,7 +279,10 @@ class ControllerSaleInpostParcel extends Controller
 				'href' => $this->url->link('sale/inpost_parcel/info', 'token=' . $this->session->data['token'] . '&order_id=' . $result['order_id'] . $url, 'SSL')
 			);
 
-			if (strtotime($result['creation_date']) > strtotime('-' . (int)$this->config->get('config_order_edit') . ' day')) {
+			// Only allow editing for Created parcels, i.e. for
+			// ones that have not yet had their labels printed.
+			if ($result['parcel_status'] == 'Created')
+			{
 				$action[] = array(
 					'text' => $this->language->get('text_edit'),
 					'href' => $this->url->link('sale/inpost_parcel/update', 'token=' . $this->session->data['token'] . '&order_id=' . $result['order_id'] . $url, 'SSL')
@@ -338,6 +338,28 @@ class ControllerSaleInpostParcel extends Controller
 		} else {
 			$this->data['success'] = '';
 		}
+
+		// Build the list of parcel statuses for the select
+		$this->data['parcel_statuses'] = array(
+			'Avizo'              => $this->language->get('select_avizo'),
+			'Claimed'            => $this->language->get('select_claimed'),
+			'Created'            => $this->language->get('select_created'),
+			'CustomerDelivering' => $this->language->get('select_customerdelivering'),
+			'CustomerSent'       => $this->language->get('select_customersent'),
+			'CustomerStored'     => $this->language->get('select_customerstored'),
+			'Delivered'          => $this->language->get('select_delivered'),
+			'DeliveredToAgency'  => $this->language->get('select_deliveredtoagency'),
+			'Expired'            => $this->language->get('select_expired'),
+			'InTransit'          => $this->language->get('select_intransit'),
+			'LabelDestroyed'     => $this->language->get('select_labeldestroyed'),
+			'LabelExpired'       => $this->language->get('select_labelexpired'),
+			'Missing'            => $this->language->get('select_missing'),
+			'NotDelivered'       => $this->language->get('select_notdelivered'),
+			'Prepared'           => $this->language->get('select_prepared'),
+			'RetunedToAgency'    => $this->language->get('select_retunedtoagency'),
+			'Sent'               => $this->language->get('select_sent'),
+			'Stored'             => $this->language->get('select_stored'),
+		);
 
 		$url = '';
 
@@ -454,18 +476,26 @@ class ControllerSaleInpostParcel extends Controller
 			$this->error['warning'] = $this->language->get('error_permission');
 		}
 
+		// Check to see if the parcel has the correct status or not
+		if (utf8_strlen($this->request->post['parcel_status']) != 'Created')
+		{
+			$this->error['warning'] = $this->language->get('error_parcel_status');
+		}
+
 		if ((utf8_strlen($this->request->post['machine_id']) < 1) || (utf8_strlen($this->request->post['machine_id']) > 11))
 		{
       			$this->error['target_machine_id'] = $this->language->get('error_machine_id');
 		}
 
-    	if ((utf8_strlen($this->request->post['email']) > 96) || (!preg_match('/^[^\@]+@.*\.[a-z]{2,6}$/i', $this->request->post['email']))) {
-      		$this->error['email'] = $this->language->get('error_email');
-    	}
+		if ((utf8_strlen($this->request->post['email']) > 96) || (!preg_match('/^[^\@]+@.*\.[a-z]{2,6}$/i', $this->request->post['email'])))
+		{
+      			$this->error['email'] = $this->language->get('error_email');
+		}
 		
-    	if ((utf8_strlen($this->request->post['mobile']) < 9) || (utf8_strlen($this->request->post['mobile']) > 9)) {
-      		$this->error['mobile'] = $this->language->get('error_mobile');
-    	}
+		if ((utf8_strlen($this->request->post['mobile']) < 9) || (utf8_strlen($this->request->post['mobile']) > 9))
+		{
+      			$this->error['mobile'] = $this->language->get('error_mobile');
+		}
 
 		$t_size = utf8_strtoupper($this->request->post['size']);
 		if ((utf8_strlen($this->request->post['size']) != 1) ||
@@ -753,26 +783,8 @@ class ControllerSaleInpostParcel extends Controller
 					}
 				}
 			}
-
-			//$this->template = 'sale/parcel_list.tpl';
-			//$this->children = array(
-				//'common/header',
-				//'common/footer'
-			//);
-
-			//$this->response->setOutput($this->render());
-//			$this->redirect($this->url->link('sale/inpost_parcel', 'token=' . $this->session->data['token'] . $url, 'SSL'));
 		}
 
-		//$this->template = 'sale/parcel_list.tpl';
-
-		//$this->response->setOutput(json_encode($json));
-		//$this->response->setOutput($this->render());
-		//$this->getList();
-
-		//$token = $this->session->data['token'];
-		//$this->redirect($this->url->link('sale/inpost_parcel&token=' .
-		//	$token, '', 'SSL'));
 		$this->redirect($this->url->link('sale/inpost_parcel', 'token=' . $this->session->data['token'] . $url, 'SSL'));
 	}
 
@@ -877,17 +889,7 @@ class ControllerSaleInpostParcel extends Controller
 					}
 				}
 			}
-
-			//$this->template = 'sale/parcel_list.tpl';
-			//$this->children = array(
-				//'common/header',
-				//'common/footer'
-			//);
-
-			//$this->response->setOutput($this->render());
 		}
-
-		//$this->getList();
 
 		$this->redirect($this->url->link('sale/inpost_parcel', 'token=' . $this->session->data['token'] . $url, 'SSL'));
 	}
@@ -1220,7 +1222,8 @@ class ControllerSaleInpostParcel extends Controller
 		$this->data['save'] = $this->url->link('sale/inpost_parcel/update', 'token=' . $this->session->data['token'] . $url, 'SSL');
 		$this->data['cancel'] = $this->url->link('sale/inpost_parcel', 'token=' . $this->session->data['token'] . $url, 'SSL');
 
-    	if (isset($this->request->get['order_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
+		if (isset($this->request->get['order_id']) &&
+			($this->request->server['REQUEST_METHOD'] != 'POST')) {
       		$order_info = $this->model_module_inpost->getParcel($this->request->get['order_id']);
     	}
 
@@ -1232,7 +1235,10 @@ class ControllerSaleInpostParcel extends Controller
 			$this->data['order_id'] = 0;
 		}
 					
-		if (isset($this->request->server['HTTPS']) && (($this->request->server['HTTPS'] == 'on') || ($this->request->server['HTTPS'] == '1'))) {
+		if (isset($this->request->server['HTTPS']) &&
+			(($this->request->server['HTTPS'] == 'on') ||
+			($this->request->server['HTTPS'] == '1')))
+		{
 			$this->data['store_url'] = HTTPS_CATALOG;
 		} else {
 			$this->data['store_url'] = HTTP_CATALOG;
@@ -1257,6 +1263,19 @@ class ControllerSaleInpostParcel extends Controller
 		else
 		{
       			$this->data['parcel_id'] = '';
+		}
+
+		if (isset($this->request->post['parcel_status']))
+		{
+      			$this->data['parcel_status'] = $this->request->post['parcel_status'];
+		}
+		elseif (!empty($order_info))
+		{
+      			$this->data['parcel_status'] = $order_info['parcel_status'];
+		}
+		else
+		{
+      			$this->data['parcel_status'] = '';
 		}
 
     		if (isset($this->request->post['mobile'])) {

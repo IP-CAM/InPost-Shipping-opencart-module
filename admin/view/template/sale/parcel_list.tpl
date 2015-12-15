@@ -65,7 +65,18 @@
               <td></td>
               <td align="right"><input type="text" name="filter_order_id" value="<?php echo $filter_order_id; ?>" size="4" style="text-align: right;" /></td>
               <td><input type="text" name="filter_parcel_id" value="<?php echo $filter_parcel_id; ?>" /></td>
-              <td><input type="text" name="filter_parcel_status" value="<?php echo $filter_parcel_id; ?>" /></td>
+              <td>
+                <select name="filter_parcel_status">
+                  <option value="*"> </option>
+                  <?php foreach ($parcel_statuses as $key => $status): ?>
+                  <?php if ($filter_parcel_status == $key): ?>
+                  <option value="$key" selected="selected"><?php echo $status; ?></option>
+                  <?php else: ?>
+                  <option value="<?php echo $key; ?>"><?php echo $status; ?></option>
+                  <?php endif; ?>
+                  <?php endforeach; ?>
+                </select>
+              </td>
               <td><input type="text" name="filter_target_machine_id" value="<?php echo $filter_target_machine_id; ?>" /></td>
               <td><input type="text" name="filter_creation_date" value="<?php echo $filter_creation_date; ?>" size="12" class="date" /></td>
 		<td>&nbsp;</td>
@@ -107,43 +118,43 @@
 <script type="text/javascript"><!--
 function filter() {
 	url = 'index.php?route=sale/inpost_parcel&token=<?php echo $token; ?>';
-	
+
 	var filter_order_id = $('input[name=\'filter_order_id\']').attr('value');
-	
+
 	if (filter_order_id) {
 		url += '&filter_order_id=' + encodeURIComponent(filter_order_id);
 	}
-	
-	var filter_customer = $('input[name=\'filter_customer\']').attr('value');
-	
-	if (filter_customer) {
-		url += '&filter_customer=' + encodeURIComponent(filter_customer);
-	}
-	
-	var filter_order_status_id = $('select[name=\'filter_order_status_id\']').attr('value');
-	
-	if (filter_order_status_id != '*') {
-		url += '&filter_order_status_id=' + encodeURIComponent(filter_order_status_id);
-	}	
 
-	var filter_total = $('input[name=\'filter_total\']').attr('value');
+	var filter_parcel_id = $('input[name=\'filter_parcel_id\']').attr('value');
 
-	if (filter_total) {
-		url += '&filter_total=' + encodeURIComponent(filter_total);
-	}	
-	
-	var filter_date_added = $('input[name=\'filter_date_added\']').attr('value');
-	
-	if (filter_date_added) {
-		url += '&filter_date_added=' + encodeURIComponent(filter_date_added);
+	if (filter_parcel_id) {
+		url += '&filter_parcel_id=' + encodeURIComponent(filter_parcel_id);
 	}
-	
-	var filter_date_modified = $('input[name=\'filter_date_modified\']').attr('value');
-	
-	if (filter_date_modified) {
-		url += '&filter_date_modified=' + encodeURIComponent(filter_date_modified);
+
+	var filter_target_machine_id = $('input[name=\'filter_target_machine_id\']').attr('value');
+
+	if (filter_target_machine_id) {
+		url += '&filter_target_machine_id=' + encodeURIComponent(filter_target_machine_id);
 	}
-				
+
+	var filter_parcel_status = $('select[name=\'filter_parcel_status\']').attr('value');
+
+	if (filter_parcel_status != '*') {
+		url += '&filter_parcel_status=' + encodeURIComponent(filter_parcel_status);
+	}
+
+	var filter_creation_date = $('input[name=\'filter_creation_date\']').attr('value');
+
+	if (filter_creation_date) {
+		url += '&filter_creation_date=' + encodeURIComponent(filter_creation_date);
+	}
+
+	var filter_sticker_creation_date = $('input[name=\'filter_sticker_creation_date\']').attr('value');
+
+	if (filter_sticker_creation_date) {
+		url += '&filter_sticker_creation_date=' + encodeURIComponent(filter_sticker_creation_date);
+	}
+
 	location = url;
 }
 //--></script>  

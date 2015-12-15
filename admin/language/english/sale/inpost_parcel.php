@@ -162,6 +162,26 @@ $_['entry_voucher']                           = 'Voucher:';
 $_['entry_reward']                            = 'Reward:';
 $_['entry_target_machine_id']                 = 'Machine:';
 
+// Select
+$_['select_avizo']                            = 'Avizo';
+$_['select_claimed']                          = 'Claimed';
+$_['select_created']                          = 'Created';
+$_['select_customerdelivering']               = 'Customer Delivering';
+$_['select_customersent']                     = 'Customer Sent';
+$_['select_customerstored']                   = 'Customer Stored';
+$_['select_delivered']                        = 'Delivered';
+$_['select_deliveredtoagency']                = 'Delivered To Agency';
+$_['select_expired']                          = 'Expired';
+$_['select_intransit']                        = 'In Transit';
+$_['select_labeldestroyed']                   = 'Label Destroyed';
+$_['select_labelexpired']                     = 'Label Expired';
+$_['select_missing']                          = 'Missing';
+$_['select_notdelivered']                     = 'Not Delivered';
+$_['select_prepared']                         = 'Prepared';
+$_['select_retunedtoagency']                  = 'Returned To Agency';
+$_['select_sent']                             = 'Sent';
+$_['select_stored']                           = 'Stored';
+
 // Error
 $_['error_warning']                           = 'Warning: Please check the form carefully for errors!';
 $_['error_permission']                        = 'Warning: You do not have permission to modify orders!';
@@ -184,4 +204,5 @@ $_['error_upload']                            = 'Upload required!';
 $_['error_filename']                          = 'Filename must be between 3 and 128 characters!';
 $_['error_filetype']                          = 'Invalid file type!';
 $_['error_action']                            = 'Warning: Could not complete this action!';
+$_['error_parcel_status']                     = 'Error: The parcel has the wrong status.';
 ?>

@@ -8,20 +8,24 @@ class Inpostparcels
 
 	public static function connectInpostparcels($params = array())
 	{
-        $params = array_merge(
-            array(
-                'url' => $params['url'],
-                'token' => $params['token'],
-                'ds' => '?',
-                'methodType' => $params['methodType'],
-                'params' => $params['params']
-            ),
-            $params
-        );
+		$params = array_merge(
+			array(
+				'url' => $params['url'],
+				'token' => $params['token'],
+				'ds' => '?',
+				'methodType' => $params['methodType'],
+				'params' => $params['params']
+			),
+			$params
+		);
 
-        $ch = curl_init();
+		$ch = curl_init();
 
-        switch($params['methodType']){
+		// Switch cURL to not worry about SSL certificate checking.
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+		switch($params['methodType'])
+		{
             case 'GET':
                 curl_setopt($ch, CURLOPT_HTTPHEADER, array('X-HTTP-Method-Override: GET') );
                 $getParams = null;
