@@ -305,7 +305,7 @@ class ModelModuleInpost extends Model
 			"order_shipping_inpostparcels`" .
 			" SET variables = '" . $vars . "'" .
 			", parcel_target_machine_id = '" .
-			$this->db->escape($data['machine_id']) .
+			$this->db->escape($data['target_machine_id']) .
 			"' WHERE order_id = '" . $order_id . "'";
 
 		$query = $this->db->query($sql);

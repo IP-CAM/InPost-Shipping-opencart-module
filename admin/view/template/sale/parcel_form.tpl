@@ -5,6 +5,9 @@
     <?php echo $breadcrumb['separator']; ?><a href="<?php echo $breadcrumb['href']; ?>"><?php echo $breadcrumb['text']; ?></a>
     <?php } ?>
   </div>
+  <?php if ($error_warning) { ?>
+  <div class="warning"><?php echo $error_warning; ?></div>
+  <?php } ?>
   <div class="box">
     <div class="heading">
       <h1><img src="view/image/order.png" alt="" /> <?php echo $heading_title; ?></h1>
@@ -31,7 +34,7 @@
           </tr>
             <tr>
               <td><span class="required">*</span> <?php echo $entry_target_machine_id; ?></td>
-              <td><input type="text" name="machine_id" id="machine_id" value="<?php echo $target_machine_id; ?>" />
+              <td><input type="text" name="target_machine_id" id="target_machine_id" value="<?php echo $target_machine_id; ?>" />
 		<a href="#" onClick="openMap(); return false;">Map</a>
                 <?php if ($error_target_machine_id) { ?>
                 <span class="error"><?php echo $error_target_machine_id; ?></span>
@@ -39,24 +42,43 @@
             </tr>
           <tr>
             <td><span class="required">*</span> <?php echo $text_email; ?></td>
-            <td><input type="text" name="email" value="<?php echo $email; ?>" />
+            <td><input type="text" name="email" value="<?php echo $email; ?>" style="width:150px;" />
                 <?php if ($error_email) { ?>
                 <span class="error"><?php echo $error_email; ?></span>
                 <?php } ?></td>
           </tr>
           <tr>
             <td><span class="required">*</span> <?php echo $text_mobile; ?></td>
-            <td>07 <input type="text" name="mobile" value="<?php echo $mobile; ?>" />
+            <td>07 <input type="text" name="mobile" value="<?php echo $mobile; ?>" maxlength="9" />
                 <?php if ($error_mobile) { ?>
                 <span class="error"><?php echo $error_mobile; ?></span>
                 <?php } ?></td>
           </tr>
           <tr>
             <td><span class="required">*</span> <?php echo $text_size; ?></td>
-            <td><input type="text" name="size" value="<?php echo $size; ?>" />
+            <td>
+                <select name="size" id="size">
+                  <option value="">Select</option>
+                  <?php if ($size == 'A'): ?>
+                  <option value="A" selected="selected"><?php echo $text_size_a; ?></option>
+                  <?php else: ?>
+                  <option value="A"><?php echo $text_size_a; ?></option>
+                  <?php endif; ?>
+                  <?php if ($size == 'B'): ?>
+                  <option value="B" selected="selected"><?php echo $text_size_b; ?></option>
+                  <?php else: ?>
+                  <option value="B"><?php echo $text_size_b; ?></option>
+                  <?php endif; ?>
+                  <?php if ($size == 'C'): ?>
+                  <option value="C" selected="selected"><?php echo $text_size_c; ?></option>
+                  <?php else: ?>
+                  <option value="C"><?php echo $text_size_c; ?></option>
+                  <?php endif; ?>
+                </select>
                 <?php if ($error_size) { ?>
                 <span class="error"><?php echo $error_size; ?></span>
-                <?php } ?></td>
+                <?php } ?>
+            </td>
           </tr>
         </table>
       </div>
@@ -64,7 +86,7 @@
     </form>
   </div>
 </div>
-<script type="text/javascript" src="https://geowidget.inpost.co.uk/dropdown.php?field_to_update=machine_id&user_function=user_function"></script>
+<script type="text/javascript" src="https://geowidget.inpost.co.uk/dropdown.php?field_to_update=target_machine_id&user_function=user_function"></script>
 <script type="text/javascript"><!--
 ///
 // user_function function
@@ -77,10 +99,4 @@ function user_function(value)
         //document.getElementById('inpost_data').value=value;
 }
 --></script>
-<script type="text/javascript"><!--
-
-//--></script> 
-<script type="text/javascript"><!--
-$('.vtabs a').tabs();
-//--></script> 
 <?php echo $footer; ?>

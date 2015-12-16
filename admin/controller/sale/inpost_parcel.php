@@ -24,7 +24,7 @@ class ControllerSaleInpostParcel extends Controller
 		$this->document->setTitle($this->language->get('heading_title'));
 
 		$this->load->model('module/inpost');
-    	
+
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') &&
 			$this->validateForm())
 		{
@@ -477,17 +477,19 @@ class ControllerSaleInpostParcel extends Controller
 		}
 
 		// Check to see if the parcel has the correct status or not
-		if (utf8_strlen($this->request->post['parcel_status']) != 'Created')
+		if ($this->request->post['parcel_status'] != 'Created')
 		{
 			$this->error['warning'] = $this->language->get('error_parcel_status');
 		}
 
-		if ((utf8_strlen($this->request->post['machine_id']) < 1) || (utf8_strlen($this->request->post['machine_id']) > 11))
+		if ((utf8_strlen($this->request->post['target_machine_id']) < 1) ||
+			(utf8_strlen($this->request->post['target_machine_id']) > 14))
 		{
       			$this->error['target_machine_id'] = $this->language->get('error_machine_id');
 		}
 
-		if ((utf8_strlen($this->request->post['email']) > 96) || (!preg_match('/^[^\@]+@.*\.[a-z]{2,6}$/i', $this->request->post['email'])))
+		if ((utf8_strlen($this->request->post['email']) > 96) ||
+			(!preg_match('/^[^\@]+@.*\.[a-z]{2,6}$/i', $this->request->post['email'])))
 		{
       			$this->error['email'] = $this->language->get('error_email');
 		}
@@ -1132,10 +1134,13 @@ class ControllerSaleInpostParcel extends Controller
 			'entry_target_machine_id',
 			'text_mobile',
 			'text_size',
+			'text_size_a',
+			'text_size_b',
+			'text_size_c',
 			'text_creation_date',
 			'button_save',
 			'button_cancel',
-		);	
+		);
 
 		foreach ($text_strings as $text)
 		{
@@ -1148,7 +1153,7 @@ class ControllerSaleInpostParcel extends Controller
 		} else {
 			$this->data['error_warning'] = '';
 		}
-		
+
  		if (isset($this->error['mobile'])) {
 			$this->data['error_mobile'] = $this->error['mobile'];
 		} else {
@@ -1294,11 +1299,16 @@ class ControllerSaleInpostParcel extends Controller
       			$this->data['size'] = '';
     		}	
 		
-		if (isset($this->request->post['target_machine_id'])) {
-      		$this->data['target_machine_id'] = $this->request->post['target_machine_id'];
-    		} elseif (!empty($order_info)) { 
+		if (isset($this->request->post['target_machine_id']))
+		{
+      			$this->data['target_machine_id'] = $this->request->post['target_machine_id'];
+		}
+		elseif (!empty($order_info))
+		{ 
 			$this->data['target_machine_id'] = $order_info['parcel_machine'];
-		} else {
+		}
+		else
+		{
       			$this->data['target_machine_id'] = '';
     		}
 		
