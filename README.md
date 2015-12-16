@@ -34,14 +34,14 @@ To allow the InPost shipping to calculate the correct dimensions for the parcels
 
 * I have applied various fixes to the code.
 
-1 The filtering options on the InPost Parcel list screen now work.
-1 The editing of the InPost parcel can only be done if the parcel is in the correct status.
-1 The Size of parcel in the edit parcel form is now a select.
-1 The length of the mobile phone field is restricted to the correct length.
-1 The length of the parcel machine is extended to fourteen characters.
-1 The Parcel status select on the list of parcels is now a select.
-1 The Edit parcel option on the Parcel list form is removed for parcels of the wrong status.
-1 When a parcel has it's label printed it status is changed and it can no longer be edited.
-1 A check is made to prevent the editing of a parcel with the wrong status.
-1 It is now possible to use HTTPS for the cURL calls.
+* The filtering options on the InPost Parcel list screen now work.
+* The editing of the InPost parcel can only be done if the parcel is in the correct status.
+* The Size of parcel in the edit parcel form is now a select.
+* The length of the mobile phone field is restricted to the correct length.
+* The length of the parcel machine is extended to fourteen characters.
+* The Parcel status select on the list of parcels is now a select.
+* The Edit parcel option on the Parcel list form is removed for parcels of the wrong status.
+* When a parcel has it's label printed it status is changed and it can no longer be edited.
+* A check is made to prevent the editing of a parcel with the wrong status.
+* It is now possible to use HTTPS for the cURL calls.
 
